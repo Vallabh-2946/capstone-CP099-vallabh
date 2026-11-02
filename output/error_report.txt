@@ -1,0 +1,16 @@
+CLEANSLATE - ERROR REPORT
+=========================
+Total records: 5
+
+Record 2: Priya Nair
+ - Invalid email: priya.example.com
+
+Record 4: Sneha Rao
+ - Invalid phone number: 12345
+ - Invalid date of birth: 31-02-2004
+
+Record 5: Rahul Sharma
+ - Duplicate record detected
+
+Records with issues: 3
+Total issues: 4
