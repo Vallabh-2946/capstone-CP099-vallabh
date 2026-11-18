@@ -1,6 +1,10 @@
 # 🧹 CleanSlate — Data Validation and Cleansing Utility
 
-A Java-based console application that helps identify data-quality issues in CSV files, detect duplicate records, standardize inconsistent data, export cleaned datasets, and generate error reports.
+![Java](https://img.shields.io/badge/Java-8%2B-orange) ![Interface](https://img.shields.io/badge/Interface-Console-blue) ![Project](https://img.shields.io/badge/Project-CP--099-green)
+
+CleanSlate is a menu-driven Java console application that checks CSV datasets for data-quality problems, detects duplicate records, standardizes inconsistent formatting, exports a cleaned copy of the data, and generates a readable error report.
+
+> **Project Code:** CP-099 &nbsp;|&nbsp; **Team:** Vallabh P (1AT24CS243), Shivam Chilkoti (1ST24CS205) &nbsp;|&nbsp; CSE, Section D, Atria Institute of Technology
 
 ---
 
@@ -10,13 +14,16 @@ A Java-based console application that helps identify data-quality issues in CSV 
 - [Problem Statement](#-problem-statement)
 - [Project Objectives](#-project-objectives)
 - [Features](#-features)
+- [Validation Rules](#-validation-rules)
 - [Technologies Used](#-technologies-used)
 - [Project Structure](#-project-structure)
 - [How the Application Works](#-how-the-application-works)
 - [Java File Responsibilities](#-java-file-responsibilities)
-- [Sample Datasets](#-sample-datasets)
+- [OOP and Java Concepts Used](#-oop-and-java-concepts-used)
+- [Sample Datasets and Results](#-sample-datasets-and-results)
 - [How to Install and Run](#-how-to-install-and-run)
 - [Output Files](#-output-files)
+- [Known Limitations](#-known-limitations)
 - [Testing Checklist](#-testing-checklist)
 - [Team Responsibilities](#-team-responsibilities)
 - [Future Enhancements](#-future-enhancements)
@@ -26,253 +33,259 @@ A Java-based console application that helps identify data-quality issues in CSV 
 
 ## 📖 About the Project
 
-CleanSlate is a data validation and cleansing utility developed using Java.
+CleanSlate is a data validation and cleansing utility developed in Java.
 
-CSV files are commonly used to store information about customers, employees, students, and other entities. However, these files can contain invalid values, inconsistent formatting, missing or incorrect information, and duplicate records.
+CSV (Comma-Separated Values) files are widely used to store information about customers, employees, students, and other entities. These files often contain invalid values, inconsistent formatting, missing information, and duplicate records.
 
-CleanSlate aims to make these datasets easier to inspect and maintain by providing a menu-driven interface for validating records, identifying duplicates, cleaning supported formatting issues, exporting processed data, and generating error reports.
+CleanSlate makes such datasets easier to inspect and maintain. Through a simple numbered menu, the user can load a dataset, validate every record, identify duplicates, clean supported formatting issues, export the processed data, and generate an error report.
 
-The application runs in a terminal and does not require a graphical user interface.
+The application runs entirely in a terminal and does not require a graphical user interface or any external libraries.
 
 ## ❗ Problem Statement
 
-Data stored in CSV files may contain several data-quality problems, including:
+Data stored in CSV files commonly suffers from problems such as:
 
-- Invalid email addresses.
-- Incorrectly formatted or incomplete phone numbers.
-- Invalid dates, such as impossible calendar dates.
-- Duplicate records.
-- Unnecessary spaces in names and other fields.
-- Inconsistent capitalization of city names.
-- Data that requires manual inspection and correction.
+| Problem | Example |
+|---|---|
+| Invalid email address | `priya.example.com` (missing `@`) |
+| Invalid or incomplete phone number | `12345` |
+| Impossible calendar date | `31-02-2004` |
+| Duplicate records | The same person entered twice |
+| Unnecessary spaces | `"  AMAN KUMAR  "` |
+| Inconsistent capitalization | `bengaluru` vs `Bengaluru` |
 
-Manually identifying these problems in large datasets can be time-consuming and error-prone.
+Finding these problems manually in large datasets is slow and error-prone.
 
-CleanSlate is designed to automate basic validation and cleansing tasks, helping users identify problems and prepare data for further processing.
+CleanSlate automates these basic checks so that problems are identified consistently and the data is prepared for further processing.
 
 ## 🎯 Project Objectives
 
-1. Read and process CSV datasets using Java.
-2. Validate common data fields using predefined rules.
+1. Read and process CSV datasets using Java file handling.
+2. Validate common data fields using clearly defined rules.
 3. Detect duplicate records.
 4. Standardize supported formatting inconsistencies.
-5. Export processed records into separate CSV files.
+5. Export processed records into separate CSV files without altering the originals.
 6. Generate readable reports describing detected errors.
-7. Demonstrate modular programming and file handling in Java.
+7. Demonstrate modular, object-oriented programming in Java.
 
 ## ✨ Features
 
-### 1. Load CSV Files
-Load one of the available sample datasets:
-
-- Customers
-- Employees
-- Students
+### 1. Load CSV File
+Choose one of the three sample datasets: **Customers**, **Employees**, or **Students**. Malformed rows (rows without exactly five fields) are skipped with a message.
 
 ### 2. Display Records
-Display the records loaded into the application so users can inspect the dataset.
+Show the loaded records in an aligned table so the dataset can be inspected.
 
 ### 3. Validate Records
-Check supported fields, including:
-
-- Names
-- Email addresses
-- Phone numbers
-- Dates of birth
-
-The validation rules determine which values are accepted and which are reported as invalid.
+Check every record against the [validation rules](#-validation-rules) and mark it **VALID** or **INVALID**, listing each problem found, followed by a summary of totals.
 
 ### 4. Detect Duplicate Records
-Identify records that match the application's duplicate-detection criteria.
+Identify records with the same **name + email + phone** (ignoring letter case and extra spaces) and report which earlier record each duplicate matches.
 
 ### 5. Clean Data and Suggest Fixes
-Apply supported standardization operations, such as:
+Apply safe formatting fixes and show every change as *before → after*:
 
-- Removing unnecessary leading and trailing spaces.
-- Standardizing city-name capitalization.
-- Preparing corrected or standardized values for export.
+- Remove leading, trailing, and repeated spaces in names.
+- Trim and lowercase email addresses.
+- Standardize city capitalization (e.g., `bengaluru` → `Bengaluru`).
 
-Validation and cleaning are separate operations: detecting an invalid value does not necessarily mean the application can safely correct it automatically.
+Values that cannot be corrected safely (invalid emails, phone numbers, and dates) are **flagged for manual correction** rather than guessed, so no incorrect data is introduced.
 
 ### 6. Export Cleaned Records
-Save processed records into a CSV file in the output directory without intentionally replacing the original input dataset.
+Save the processed records to `output/cleaned_<dataset>.csv`. The original input file is never modified.
 
-### 7. Generate Error Reports
-Generate a readable text report describing detected data-quality issues.
+### 7. Generate Error Report
+Write a text report to `output/<dataset>_error_report.txt` listing each affected record, its issues (validation errors and duplicates), and overall totals.
 
 ### 8. Exit
-Close the application using the menu.
+Close the application.
 
----
+> Every option from 2 to 7 checks that a dataset has been loaded first, and non-numeric menu input is handled without crashing.
+
+## ✅ Validation Rules
+
+| Field | Rule | Valid example | Invalid example |
+|---|---|---|---|
+| Name | Must not be empty | `Rahul Sharma` | *(blank)* |
+| Email | `text@domain.extension`, extension of 2+ letters | `rahul@example.com` | `priya.example.com` |
+| Phone | Exactly 10 digits, starting with 6, 7, 8, or 9 (Indian mobile format) | `9876543210` | `12345` |
+| Date of birth | Format `DD-MM-YYYY`, must be a real calendar date, not in the future | `15-08-2003` | `31-02-2004` |
+
+Dates are checked in **strict** mode, so impossible dates such as `31-02-2004`, `31-04-2004`, or `29-02-2001` (not a leap year) are rejected instead of being silently adjusted.
 
 ## 🛠️ Technologies Used
 
 | Technology | Purpose |
 |---|---|
-| Java | Core application logic |
-| Java File I/O | Reading and writing files |
+| Java (JDK 8 or later) | Core application logic |
+| Java File I/O (`BufferedReader`, `BufferedWriter`) | Reading input files and writing output files |
+| Java Collections (`ArrayList`, `HashMap`, `HashSet`) | Storing records and detecting duplicates |
+| `java.util.regex` | Email and phone validation patterns |
+| `java.time` (`LocalDate`) | Strict date validation |
 | CSV | Input datasets and exported records |
-| PowerShell | Running commands on Windows |
-| Git | Version control |
-| GitHub | Source-code hosting and collaboration |
-
----
+| PowerShell / Terminal | Compiling and running the application |
+| Git and GitHub | Version control and collaboration |
 
 ## 📂 Project Structure
 
 ```text
-CleanSlate/
+capstone-CP099-vallabh/
 │
-├── Main.java
-├── Record.java
-├── CSVReader.java
-├── DataValidator.java
-├── DuplicateDetector.java
-├── DataCleaner.java
-├── CSVExporter.java
-├── ErrorReporter.java
+├── Main.java               # Menu and program control
+├── Record.java             # Data model for one CSV row
+├── CSVReader.java          # Reads CSV files into Record objects
+├── DataValidator.java      # Validation rules
+├── DuplicateDetector.java  # Duplicate detection
+├── DataCleaner.java        # Formatting cleanup
+├── CSVExporter.java        # Writes cleaned CSV files
+├── ErrorReporter.java      # Writes error reports
 │
-├── input/
+├── input/                  # Original datasets (never modified)
 │   ├── customers.csv
 │   ├── employees.csv
 │   └── students.csv
 │
-├── output/
-│   ├── cleaned_customers.csv
-│   └── error_report.txt
+├── output/                 # Files generated by the application
 │
 ├── README.md
-├── CleanSlate_Team_Project_Guide.docx
-└── .gitignore
+└── .gitignore              # Excludes compiled .class files and IDE settings
 ```
-
-The exact files in `output/` may change as the application is tested and run.
 
 ## 🔄 How the Application Works
 
-The application follows this general workflow:
-
 ```text
-          ┌───────────────────┐
-          │   Start Program   │
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │ Display Main Menu │
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │   Load CSV File   │
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │  Display Records  │
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │ Validate Records  │
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │ Detect Duplicates │
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │  Clean the Data   │
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │ Export CSV / Report│
-          └─────────┬─────────┘
-                    │
-                    ▼
-          ┌───────────────────┐
-          │       Exit        │
-          └───────────────────┘
+            ┌───────────────────┐
+            │   Start Program   │
+            └─────────┬─────────┘
+                      ▼
+            ┌───────────────────┐
+            │ Display Main Menu │◄──────────────┐
+            └─────────┬─────────┘               │
+                      ▼                         │
+            ┌───────────────────┐               │
+            │   Load CSV File   │  CSVReader    │
+            └─────────┬─────────┘               │
+                      ▼                         │
+   ┌──────────────────────────────────────┐     │
+   │ Display │ Validate │ Find Duplicates │     │  Repeat until
+   │  Clean  │  Export CSV  │ Error Report │────┘  user selects Exit
+   └──────────────────────────────────────┘
+                      ▼
+            ┌───────────────────┐
+            │       Exit        │
+            └───────────────────┘
 ```
 
-The user selects operations from the menu. Validation, duplicate detection, cleaning, and exporting can be performed as separate actions according to the application's implementation.
+1. `Main` displays the menu in a loop and reads the user's choice.
+2. `CSVReader` reads the selected file line by line, skips the header, and converts each row into a `Record` object stored in a shared list.
+3. Each menu action passes that list to the responsible class.
+4. Cleaning updates the same `Record` objects, so a later export contains the cleaned values.
+5. Export and report files are written to `output/` and named after the loaded dataset.
 
 ## 🧩 Java File Responsibilities
 
 | File | Responsibility |
 |---|---|
-| `Main.java` | Displays the menu and coordinates the application's operations. |
-| `Record.java` | Represents an individual data record. |
-| `CSVReader.java` | Reads CSV input and loads records. |
-| `DataValidator.java` | Implements data-validation rules. |
-| `DuplicateDetector.java` | Identifies duplicate records. |
-| `DataCleaner.java` | Implements supported data-cleaning operations. |
-| `CSVExporter.java` | Exports processed records to CSV files. |
-| `ErrorReporter.java` | Generates reports describing detected issues. |
+| `Main.java` | Displays the menu, handles user input, and coordinates all operations. |
+| `Record.java` | Represents one data record (name, email, phone, date of birth, city). |
+| `CSVReader.java` | Reads a CSV file, skips the header and malformed rows, and returns a list of records. |
+| `DataValidator.java` | Applies validation rules and returns a list of errors for each record. |
+| `DuplicateDetector.java` | Finds duplicate records using a normalized name + email + phone key. |
+| `DataCleaner.java` | Trims spaces, lowercases emails, and standardizes city capitalization. |
+| `CSVExporter.java` | Writes processed records to a CSV file, creating the output folder if needed. |
+| `ErrorReporter.java` | Reuses the validator and duplicate check to write a summary error report. |
 
-The classes are separated by responsibility to make the application easier to understand, maintain, test, and extend.
+Each class has a single responsibility, making the application easier to understand, maintain, test, and extend.
 
-## 📊 Sample Datasets
+## 🧠 OOP and Java Concepts Used
 
-The project includes three sample datasets.
+| Concept | Where it is used |
+|---|---|
+| Classes and objects | Each CSV row becomes a `Record` object |
+| Constructor | `Record` initializes its fields when created |
+| Encapsulation | `Record` groups its data with its `display()` behavior |
+| Abstraction | `Main` calls operations without depending on their internal logic |
+| Modularity / single responsibility | One class per task |
+| Code reuse | `ErrorReporter` reuses `DataValidator.validateRecord()` |
+| Interface-based programming | `List<Record> records = new ArrayList<>()` |
+| Exception handling | `try-catch` and try-with-resources for file and date errors |
+| Collections | `ArrayList`, `HashMap`, `HashSet` |
+| Regular expressions | Email and phone validation |
 
-| Dataset | File | Purpose |
-|---|---|---|
-| Customers | `customers.csv` | Demonstrates customer-record validation and cleansing. |
-| Employees | `employees.csv` | Demonstrates processing employee records. |
-| Students | `students.csv` | Demonstrates processing student records. |
+## 📊 Sample Datasets and Results
 
-The sample data includes examples intended to help test data validation, duplicate detection, and standardization.
+| Dataset | File | Records | Valid | Invalid | Duplicates | Records cleaned |
+|---|---|---|---|---|---|---|
+| Customers | `customers.csv` | 5 | 3 | 2 | 1 | 1 |
+| Employees | `employees.csv` | 15 | 8 | 7 | 2 | 5 |
+| Students | `students.csv` | 15 | 10 | 5 | 1 | 4 |
+
+The sample data deliberately includes invalid emails, short phone numbers, impossible dates, duplicate rows, extra spaces, and lowercase city names to demonstrate every feature.
+
+**Example error report (customers):**
+
+```text
+CLEANSLATE - ERROR REPORT
+=========================
+Total records: 5
+
+Record 2: Priya Nair
+ - Invalid email: priya.example.com
+
+Record 4: Sneha Rao
+ - Invalid phone number: 12345
+ - Invalid date of birth: 31-02-2004
+
+Record 5: Rahul Sharma
+ - Duplicate record detected
+
+Records with issues: 3
+Total issues: 4
+```
 
 ## ⚙️ How to Install and Run
 
 ### Prerequisites
 
-Install a Java Development Kit (JDK).
+- A Java Development Kit (JDK 8 or later).
+- PowerShell or Command Prompt on Windows, or a terminal on macOS/Linux.
+- Git (optional — you can download the ZIP instead).
 
-Verify that Java and the compiler are available by opening PowerShell and running:
+Verify Java is installed:
 
 ```powershell
 java -version
 javac -version
 ```
 
-Both commands should display version information.
-
 ### Step 1: Download the Project
 
-Clone the repository:
+**Option A — Clone with Git**
 
 ```powershell
 git clone https://github.com/Vallabh-2946/capstone-CP099-vallabh.git
-```
-
-### Step 2: Navigate to the Project Directory
-
-```powershell
 cd capstone-CP099-vallabh
 ```
 
-### Step 3: Compile the Java Files
+**Option B — Download ZIP**
+
+Click **Code → Download ZIP** on the repository page, extract it, and open a terminal in the extracted folder.
+
+### Step 2: Compile
 
 ```powershell
 javac *.java
 ```
 
-If compilation succeeds, the Java compiler returns to the terminal prompt without displaying errors.
-
-### Step 4: Run the Application
+### Step 3: Run
 
 ```powershell
 java Main
 ```
 
-### Step 5: Use the Menu
+> Run the program from the project folder, because input and output paths are relative to it.
 
-The application displays a menu similar to the following:
+### Step 4: Use the Menu
 
 ```text
 ========================================
@@ -291,91 +304,76 @@ The application displays a menu similar to the following:
 Enter your choice:
 ```
 
-Choose the desired operation by entering its corresponding number.
-
-**Note:** The menu shown above describes the intended interface. Confirm the available options and their behavior against the current source code.
+**Recommended demo order:** `1` (choose a dataset) → `2` → `3` → `4` → `5` → `6` → `7` → open the `output/` folder → `8`.
 
 ## 📁 Output Files
 
-The application uses the `output/` directory for generated files.
+| File | Created by | Contents |
+|---|---|---|
+| `output/cleaned_customers.csv` | Option 6 | Processed customer records |
+| `output/cleaned_employees.csv` | Option 6 | Processed employee records |
+| `output/cleaned_students.csv` | Option 6 | Processed student records |
+| `output/<dataset>_error_report.txt` | Option 7 | Issues per record and overall totals |
 
-Examples include:
+Files are overwritten each time the same option is run for the same dataset. Original files in `input/` remain unchanged so results can always be compared with the source.
 
-| File | Purpose |
-|---|---|
-| `cleaned_customers.csv` | Example of an exported customer dataset. |
-| `cleaned_employees.csv` | Intended export for employee records. |
-| `cleaned_students.csv` | Intended export for student records. |
-| `error_report.txt` | Example of a text report containing detected issues. |
+## ⚠️ Known Limitations
 
-Generated filenames and report contents depend on the dataset selected and the operations performed.
-
-The original CSV files should remain in the `input/` directory so that the original data can be compared with the processed results.
+- Only the three bundled datasets can be loaded.
+- CSV values containing commas inside quotes are not supported.
+- Duplicates are reported but not removed automatically.
+- Invalid emails, phone numbers, and dates are flagged, not corrected.
+- All records are held in memory, so very large files may be slow.
 
 ## 🧪 Testing Checklist
 
-Use the following checklist to verify the application.
-
-- [ ] Compile all Java source files successfully.
-- [ ] Load the customer dataset.
-- [ ] Load the employee dataset.
-- [ ] Load the student dataset.
-- [ ] Display loaded records.
-- [ ] Test valid and invalid email addresses.
-- [ ] Test valid and invalid phone numbers.
-- [ ] Test valid and invalid dates.
-- [ ] Test duplicate detection.
-- [ ] Verify whitespace cleaning.
-- [ ] Verify city-name standardization.
-- [ ] Export processed records.
-- [ ] Open exported CSV files and inspect their contents.
-- [ ] Generate an error report.
-- [ ] Verify that reported errors correspond to the input records.
-- [ ] Confirm that the original input files remain unchanged.
+- [x] All Java source files compile successfully.
+- [x] Customer, employee, and student datasets load correctly.
+- [x] Loaded records display correctly.
+- [x] Invalid emails, phone numbers, and dates are detected.
+- [x] Impossible dates (e.g., `31-02`, `29-02` in non-leap years) are rejected.
+- [x] Duplicate records are detected and matched to the original record.
+- [x] Extra spaces and city capitalization are cleaned.
+- [x] Cleaned records export to the `output/` folder.
+- [x] Error report totals match the listed issues.
+- [x] Original input files remain unchanged.
+- [x] Invalid menu input is handled without crashing.
 
 ## 👥 Team Responsibilities
 
-The work can be divided among team members as follows.
-
 | Work Area | Relevant Files | Responsibility |
 |---|---|---|
-| Application integration | `Main.java` | Menu handling and connecting application features. |
-| Data model and CSV input | `Record.java`, `CSVReader.java` | Representing records and reading input files. |
-| Validation | `DataValidator.java` | Defining and implementing validation rules. |
-| Duplicate detection | `DuplicateDetector.java` | Defining and testing duplicate-matching criteria. |
-| Data cleaning | `DataCleaner.java` | Implementing standardization and cleaning operations. |
-| Export and reporting | `CSVExporter.java`, `ErrorReporter.java` | Saving processed data and generating reports. |
-| Testing and documentation | Test cases, `README.md`, project guide | Verifying behavior and documenting the project. |
-
-Team members should coordinate changes and test the integrated application before presenting it.
+| Application integration | `Main.java` | Menu handling and connecting features |
+| Data model and CSV input | `Record.java`, `CSVReader.java` | Representing records and reading input files |
+| Validation | `DataValidator.java` | Defining and implementing validation rules |
+| Duplicate detection | `DuplicateDetector.java` | Defining and testing duplicate-matching criteria |
+| Data cleaning | `DataCleaner.java` | Standardization and cleaning operations |
+| Export and reporting | `CSVExporter.java`, `ErrorReporter.java` | Saving processed data and generating reports |
+| Testing and documentation | Sample datasets, `README.md`, user manual | Verifying behavior and documenting the project |
 
 ## 🚀 Future Enhancements
 
-Potential improvements include:
-
-- Support for user-selected CSV files.
-- More comprehensive CSV parsing and validation.
-- Additional validation rules for different data types.
-- Detailed error reports with suggested corrections.
-- Configurable cleaning rules.
-- A summary of errors before and after cleaning.
-- Automated unit tests.
+- Load any user-selected CSV file.
+- Robust CSV parsing (quoted values, commas inside fields).
+- Option to remove duplicate records automatically.
+- Suggested corrections for invalid values in the report.
+- Additional and configurable validation rules (age range, name characters).
+- A before/after data-quality summary.
+- Automated unit tests with JUnit.
 - A graphical user interface.
-- Support for larger datasets and more file formats.
+- Support for larger datasets and formats such as Excel and JSON.
 
-These are possible future improvements, not claims about features already implemented.
+These are planned improvements, not features of the current version.
 
 ## 🏁 Conclusion
 
-CleanSlate demonstrates how Java can be used to process CSV datasets, validate records, detect duplicate entries, standardize data, export processed files, and generate error reports.
+CleanSlate shows how Java can be used to read CSV datasets, validate records, detect duplicates, standardize data, export processed files, and generate error reports.
 
-Its modular structure separates reading, validation, duplicate detection, cleaning, exporting, and reporting into individual classes.
-
-The project provides a foundation for understanding data quality and file processing while offering opportunities for further development and testing.
+Its modular, object-oriented design separates reading, validation, duplicate detection, cleaning, exporting, and reporting into individual classes, providing a solid foundation for further development.
 
 ---
 
-**Project:** CleanSlate — Data Validation and Cleansing Utility  
-**Language:** Java  
-**Interface:** Console-based  
+**Project:** CleanSlate — Data Validation and Cleansing Utility (CP-099)
+**Language:** Java
+**Interface:** Console-based
 **Repository:** [capstone-CP099-vallabh](https://github.com/Vallabh-2946/capstone-CP099-vallabh)
